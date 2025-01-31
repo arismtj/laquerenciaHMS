@@ -6,6 +6,8 @@ import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Whatsapp from "../components/whatsapp/Whatsapp";
 import "./globals.css";
+import { NextAuthProvider } from "../components/AuthProvider/AuthProvider";
+import Toast from "../components/Toast/Toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,12 +40,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <main className="font-name">
-          <Header />
-          {children}
-          <Whatsapp />
-          <Footer />
-        </main>
+
+        <NextAuthProvider>
+          <Toast/>
+          <main className="font-name">
+            <Header />
+            {children}
+            <Whatsapp />
+            <Footer />
+          </main>
+        </NextAuthProvider>
       </body>
     </html>
   );

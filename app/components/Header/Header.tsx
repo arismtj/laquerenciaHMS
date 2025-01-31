@@ -18,10 +18,10 @@ export default function Header() {
           <img src={logoquerencia.src} className="logo w-36 " />
         </Link>
 
-        <div className="">
+        <Link href="/auth">
           <HiMiniUserCircle className="sombrilla1 size-10 mr-20" />
           
-        </div>
+        </Link>
 
         {/* hamburguesa y cerrar */}
 

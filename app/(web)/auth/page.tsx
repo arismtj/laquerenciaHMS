@@ -1,13 +1,17 @@
 'use client';
 
-import {ChangeEvent, FormEvent, useState} from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { AiFillFacebook } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { signUp } from "next-auth-sanity/client";
+import { signIn, useSession } from "next-auth/react";
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const defaultFormData = {
-  email:'',
-  name:'',
-  password:'',
+  email: '',
+  name: '',
+  password: '',
 }
 
 const Auth = () => {
@@ -17,23 +21,42 @@ const Auth = () => {
   const inputStyles =
     "border border-gray-300 sm:text-sm text-black rounded:lg block w-full p-2.5 focus:outline-none ";
 
-    const handleInputchange = (event: ChangeEvent<HTMLInputElement>) =>{
-      const {name, value} = event.target;
-      setFormData({...formData, [name]: value});
-    };
+  const handleInputchange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault ();
+  
 
-      try{
-        console.log(formData);
-      } catch(error){
-        console.log(error);
-      } finally{
-        setFormData(defaultFormData);
+  const loginHandler = async () => {
+    try {
+      await signIn();
+ 
 
+    } catch (error) {
+      console.log(error)
+      toast.error("Something wen't wrong")
+    }
+
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const user = await signUp(formData)
+      if (user) {
+        toast.success('Success. Please sign in');
       }
-    };
+
+    } catch (error) {
+      console.log(error);
+      toast.error("Something wen't wrong")
+    } finally {
+      setFormData(defaultFormData);
+
+    }
+  };
 
   return (
     <section className="container mx-auto">
@@ -44,9 +67,9 @@ const Auth = () => {
           </h1>
           <p>OR</p>
           <span className="inline-flex items-center">
-            <AiFillFacebook className="mr-3 text-4xl cursor-pointer text-black " />
+            <AiFillFacebook onClick={loginHandler} className="mr-3 text-4xl cursor-pointer text-black " />{''}
             |
-            <FcGoogle className="ml-3 text-4xl cursor-pointer " />
+            <FcGoogle onClick={loginHandler} className="ml-3 text-4xl cursor-pointer " />
           </span>
         </div>
 
@@ -90,7 +113,7 @@ const Auth = () => {
           </button>
         </form>
 
-        <button className="text-blue-700 underline">
+        <button onClick={loginHandler} className="text-blue-700 underline">
           login
         </button>
       </div>
